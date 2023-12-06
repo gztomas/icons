@@ -229,31 +229,26 @@ export function getIconsPage(document: IFigmaDocument): IFigmaCanvas | null {
 }
 
 export function getIcons(iconsCanvas: IFigmaCanvas): IIcons {
-  return iconsCanvas.children.reduce((icons: IIcons, iconSetNode) => {
-    // We technically don't want icon sets to be in Groups, but we should still allow it
-    if (iconSetNode.type === 'FRAME' || iconSetNode.type === 'GROUP') {
-      iconSetNode.children.forEach((iconNode) => {
-        // Our individual icons frames may be Figma "Components" 🤙
-        if (iconNode.type === 'FRAME' || iconNode.type === 'COMPONENT') {
-          // 'Break Link' => 'break-link'
-          // 'GitHub Logo' => 'github-logo'
-          const svgName = _.kebabCase(iconNode.name.toLowerCase());
+  return iconsCanvas.children.reduce((icons: IIcons, iconNode) => {
+    // Our individual icons frames may be Figma "Components" 🤙
+    if (iconNode.type === 'FRAME' || iconNode.type === 'COMPONENT') {
+      // 'Break Link' => 'break-link'
+      // 'GitHub Logo' => 'github-logo'
+      const svgName = _.kebabCase(iconNode.name.toLowerCase());
 
-          // We insert whitespace between lower and uppercase letters
-          // to make sure that lodash preserves existing camel-casing.
-          // 'Break Link' => 'BreakLink'
-          // 'GitHub Logo' => 'GitHubLogo'
-          const jsxName = _.upperFirst(_.camelCase(iconNode.name.replace(/([0-9a-z])([0-9A-Z])/g, '$1 $2')));
+      // We insert whitespace between lower and uppercase letters
+      // to make sure that lodash preserves existing camel-casing.
+      // 'Break Link' => 'BreakLink'
+      // 'GitHub Logo' => 'GitHubLogo'
+      const jsxName = _.upperFirst(_.camelCase(iconNode.name.replace(/([0-9a-z])([0-9A-Z])/g, '$1 $2')));
 
-          icons[iconNode.id] = {
-            jsxName,
-            svgName,
-            id: iconNode.id,
-            size: labelling.sizeFromFrameNodeName(iconSetNode.name),
-            type: labelling.typeFromFrameNodeName(iconSetNode.name),
-          };
-        }
-      });
+      icons[iconNode.id] = {
+        jsxName,
+        svgName,
+        id: iconNode.id,
+        size: '16',
+        type: 'icons',
+      };
     }
     return icons;
   }, {});
