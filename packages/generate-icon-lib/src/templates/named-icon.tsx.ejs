@@ -28,7 +28,7 @@ export const <%- iconToComponentName(icon) %> = React.forwardRef<SVGSVGElement, 
 
     console.error(`<%- iconToComponentName(icon) %> doesn't support the combination of ${size} and ${type}`)
     return null;
-  }
+  },
 );
 
 <% /* B. There are only size variants */ %>
@@ -54,7 +54,7 @@ export const <%- iconToComponentName(icon) %> = React.forwardRef<SVGSVGElement, 
 
     console.error(`<%- iconToComponentName(icon) %> doesn't support ${size}`)
     return null;
-  }
+  },
 );
   
 <% /* C. There are only type variants */ %>
@@ -80,7 +80,7 @@ export const <%- iconToComponentName(icon) %> = React.forwardRef<SVGSVGElement, 
 
     console.error(`<%- iconToComponentName(icon) %> doesn't support ${type}`)
     return null;
-  }
+  },
 );
 
 <% /* D. There are no variants */ %>
@@ -88,8 +88,10 @@ export const <%- iconToComponentName(icon) %> = React.forwardRef<SVGSVGElement, 
 export const <%- iconToComponentName(icon) %> = React.forwardRef<SVGSVGElement, IconProps>(
   ({ color = 'currentColor', ...props }, forwardedRef) => {
     return <%- iconToSVGSourceAsJSX(icon, icon.sizes[0], icon.types[0]) %>
-  }
+  },
 );
 <% } %>
+
+<%- iconToComponentName(icon) %>.displayName = '<%- iconToComponentName(icon) %>';
 
 export default <%- iconToComponentName(icon) %>;
