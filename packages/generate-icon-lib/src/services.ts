@@ -43,14 +43,15 @@ const transformers = {
   injectCurrentColor(svgRaw: string) {
     const $ = cheerio.load(svgRaw, { xmlMode: true });
     $('*').each((i, el) => {
-      Object.keys(el.attribs).forEach((attrKey) => {
-        if (['fill', 'stroke'].includes(attrKey)) {
-          const val = $(el).attr(attrKey);
-          if (val !== 'none') {
-            $(el).attr(attrKey, 'currentColor');
+      'attribs' in el &&
+        Object.keys(el.attribs).forEach((attrKey) => {
+          if (['fill', 'stroke'].includes(attrKey)) {
+            const val = $(el).attr(attrKey);
+            if (val !== 'none') {
+              $(el).attr(attrKey, 'currentColor');
+            }
           }
-        }
-      });
+        });
     });
 
     return $.xml();
@@ -64,14 +65,15 @@ const transformers = {
   readyForJSX(svgRaw: string) {
     const $ = cheerio.load(svgRaw, { xmlMode: true });
     $('*').each((i, el) => {
-      Object.keys(el.attribs).forEach((attrKey) => {
-        if (attrKey.includes('-')) {
-          $(el).attr(_.camelCase(attrKey), el.attribs[attrKey]).removeAttr(attrKey);
-        }
-        if (attrKey === 'class') {
-          $(el).attr('className', el.attribs[attrKey]).removeAttr(attrKey);
-        }
-      });
+      'attribs' in el &&
+        Object.keys(el.attribs).forEach((attrKey) => {
+          if (attrKey.includes('-')) {
+            $(el).attr(_.camelCase(attrKey), el.attribs[attrKey]).removeAttr(attrKey);
+          }
+          if (attrKey === 'class') {
+            $(el).attr('className', el.attribs[attrKey]).removeAttr(attrKey);
+          }
+        });
     });
 
     return $('svg')
