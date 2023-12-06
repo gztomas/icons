@@ -119,7 +119,7 @@ export async function prechecks() {
       throw new CodedError(
         ERRORS.NETWORK_OFFLINE,
         'An internet connection is required to find and render Icons.',
-        true
+        true,
       );
     }
   });
@@ -136,13 +136,13 @@ export async function prechecks() {
       new CodedError(
         ERRORS.DIRTY_WORKING_DIR,
         'There are uncommitted or untracked files in the working directory.\nPlease commit, stash, or remove them. Then try again.',
-        true
+        true,
       ),
-      false
+      false,
     );
     console.error(`
 ${chalk.bold('Git Status')} ${chalk.dim(
-      `(${['--no-renames', '--untracked-files', '--short', '--', FOLDER_PATH_ICONS].join(' ')})`
+      `(${['--no-renames', '--untracked-files', '--short', '--', FOLDER_PATH_ICONS].join(' ')})`,
     )}
 `);
     await execa('git', ['status', '--no-renames', '--untracked-files', '--short', '--', FOLDER_PATH_ICONS], {
@@ -170,7 +170,7 @@ export async function getFigmaDocument(config: IFigmaConfig): Promise<IFigmaDocu
   if (data.status === 403 && data.err === 'Invalid token') {
     throw new CodedError(
       ERRORS.FIGMA_API,
-      'An invalid token was used. Follow the Auth Guide (https://git.io/Je87i), and try again.'
+      'An invalid token was used. Follow the Auth Guide (https://git.io/Je87i), and try again.',
     );
   }
   return data.document;
@@ -198,14 +198,14 @@ export async function renderIdsToSvgs(ids: string[], config: IFigmaConfig): Prom
       case 404:
         throw new CodedError(
           ERRORS.FIGMA_API,
-          "One or more of the icons couldn't be found in Figma. Check to see if they still exist, and try again."
+          "One or more of the icons couldn't be found in Figma. Check to see if they still exist, and try again.",
         );
       case 500:
         throw new CodedError(ERRORS.FIGMA_API, 'Figma could not render the icons. ಠ_ಠ');
       default:
         throw new CodedError(
           ERRORS.UNEXPECTED,
-          `An error occured while rendering icons to SVG.\n${resp.status}\n${error}`
+          `An error occured while rendering icons to SVG.\n${resp.status}\n${error}`,
         );
     }
   }
@@ -213,7 +213,7 @@ export async function renderIdsToSvgs(ids: string[], config: IFigmaConfig): Prom
   if (!data.images || !Object.keys(data.images).length) {
     throw new CodedError(
       ERRORS.UNEXPECTED,
-      `An error occured after rendering icons in Figma. Render response:\n${JSON.stringify(data, null, 2)}`
+      `An error occured after rendering icons in Figma. Render response:\n${JSON.stringify(data, null, 2)}`,
     );
   }
 
@@ -221,7 +221,7 @@ export async function renderIdsToSvgs(ids: string[], config: IFigmaConfig): Prom
 }
 
 export function getIconsPage(document: IFigmaDocument): IFigmaCanvas | null {
-  const canvas = document.children.find((page) => page.name.toLowerCase() === 'icons');
+  const canvas = document.children.find((page) => page.name.toLowerCase().includes('icons'));
 
   return canvas && canvas.type === 'CANVAS' ? canvas : null;
 }
@@ -260,7 +260,9 @@ export function getIcons(iconsCanvas: IFigmaCanvas): IIcons {
 export async function downloadSvgsToFs(urls: IIconsSvgUrls, icons: IIcons, onProgress: () => void) {
   await Promise.all(
     Object.keys(urls).map(async (iconId) => {
-      const processedSvg = await (await fetch(urls[iconId]))
+      const processedSvg = await (
+        await fetch(urls[iconId])
+      )
         .text()
         .then(async (svgRaw) => transformers.passSVGO(svgRaw))
         .then((svgRaw) => transformers.injectCurrentColor(svgRaw))
@@ -270,7 +272,7 @@ export async function downloadSvgsToFs(urls: IIconsSvgUrls, icons: IIcons, onPro
       await fs.outputFile(filePath, processedSvg, { encoding: 'utf8' });
       currentListOfAddedFiles.push(filePath);
       onProgress();
-    })
+    }),
   );
 }
 
@@ -329,7 +331,7 @@ export async function generateReactComponents(icons: IIcons) {
       iconsWithVariants[icons[iconId].svgName] = icon;
 
       return iconsWithVariants;
-    }, {})
+    }, {}),
   );
 
   const templateHelpers = {
@@ -431,7 +433,7 @@ export async function generateIconManifest(icons: IIcons) {
 
 export async function swapGeneratedFiles(
   previousIconManifest: IIconManifest,
-  nextIconManifest: IIconManifest
+  nextIconManifest: IIconManifest,
 ): Promise<string[]> {
   /* We must find all dirs and files that were generated, and remove them: */
   let generatedFilePaths = [];
