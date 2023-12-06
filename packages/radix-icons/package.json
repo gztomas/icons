@@ -24,7 +24,7 @@
     "access": "public"
   },
   "scripts": {
-    "generate-src": "generate-icon-lib --file=9Df5CaFUEomVzn20gRpaX3 && mv ./icons/15/* ./icons && rmdir ./icons/15 && cd ./icons && zip -r ../../../radix-icons.zip ./",
+    "generate-src": "generate-icon-lib --file=YiZ9Y3g9DNHmkY0fP4hADC && mv ./icons/16/* ./icons && rmdir ./icons/16 && cd ./icons && zip -r ../../../radix-icons.zip ./",
     "build": "rimraf dist && tsdx build --format es,cjs --entry src/index.tsx",
     "watch": "rimraf dist && tsdx watch --format es,cjs --entry src/index.tsx",
     "prepublishOnly": "npm run build"
