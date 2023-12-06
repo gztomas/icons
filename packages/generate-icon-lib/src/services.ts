@@ -207,7 +207,7 @@ export async function renderIdsToSvgs(ids: string[], config: IFigmaConfig): Prom
       default:
         throw new CodedError(
           ERRORS.UNEXPECTED,
-          `An error occured while rendering icons to SVG.\n${resp.status}\n${error}`,
+          `An error occurred while rendering icons to SVG.\n${resp.status}\n${error}`,
         );
     }
   }
@@ -215,7 +215,7 @@ export async function renderIdsToSvgs(ids: string[], config: IFigmaConfig): Prom
   if (!data.images || !Object.keys(data.images).length) {
     throw new CodedError(
       ERRORS.UNEXPECTED,
-      `An error occured after rendering icons in Figma. Render response:\n${JSON.stringify(data, null, 2)}`,
+      `An error occurred after rendering icons in Figma. Render response:\n${JSON.stringify(data, null, 2)}`,
     );
   }
 
